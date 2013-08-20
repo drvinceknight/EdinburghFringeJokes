@@ -173,6 +173,7 @@ if __name__ == '__main__':
     plt.ylabel('Frequency')
     plt.savefig('histofjokelengths.png')
     plt.close()
+    print 'Mean joke length (characters): ', mean(jokelengths)
 
     # Get histogram of length of jokes (words)
     jokelengths = [len(re.findall(r'\w+', joke.joke)) for joke in jokeslist]
@@ -182,6 +183,7 @@ if __name__ == '__main__':
     plt.ylabel('Frequency')
     plt.savefig('histofjokewordlengths.png')
     plt.close()
+    print 'Mean joke length (words): ', mean(jokelengths)
 
     # Get scatter plot of joke rank vs length of joke
     x = []
