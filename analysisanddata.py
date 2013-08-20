@@ -3,6 +3,7 @@
 File for analysis of joke data from Edinburgh Fringe festival. These jokes and rankings taken from BBC website.
 """
 import matplotlib.pyplot as plt
+from pylab import polyfit, poly1d
 
 jd = [
         [2013, 'Rob Auton', 1, "I heard a rumour that Cadbury is bringing out an oriental chocolate bar. Could be a Chinese Wispa."],
@@ -101,6 +102,7 @@ if __name__ == '__main__':
     plt.figure
     plt.scatter(x, y)
     plt.savefig('nbrofjokesvrank.png')
+    plt.close()
 
     # Get mean min rank vs number of jokes
     nbrofjokesvmean = []
@@ -113,9 +115,56 @@ if __name__ == '__main__':
     plt.figure
     plt.scatter(x, y)
     plt.savefig('nbrofjokesvmean.png')
+    plt.close()
+
+    # Get box plot of mean rank by number of jokes
+    boxes = [[] for e in range(max([len(authorsdict[author].jokes) for author in authorsdict]))]
+    for author in authorsdict:
+        a = authorsdict[author]
+        boxes[len(a.jokes) - 1].append(mean([j[0] for year in a.jokes for j in a.jokes[year] ]))
+    plt.figure
+    plt.boxplot(boxes)
+    plt.xlabel('Number of jokes')
+    plt.ylabel('Mean rank')
+    plt.savefig('boxplotofmeanrankvnbrofjokes.png')
+    plt.close()
+
+    # Get box plot of min rank by number of jokes
+    boxes = [[] for e in range(max([len(authorsdict[author].jokes) for author in authorsdict]))]
+    for author in authorsdict:
+        a = authorsdict[author]
+        boxes[len(a.jokes) - 1].append(min([j[0] for year in a.jokes for j in a.jokes[year] ]))
+    plt.figure
+    plt.boxplot(boxes)
+    plt.xlabel('Number of jokes')
+    plt.ylabel('Min rank')
+    plt.savefig('boxplotofminrankvnbrofjokes.png')
+    plt.close()
+
 
     # Get histogram of length of jokes
     jokelengths = [len(joke.joke) for joke in jokeslist]
     plt.figure
     plt.hist(jokelengths)
+    plt.xlabel('Joke length')
+    plt.ylabel('Frequency')
     plt.savefig('histofjokelengths.png')
+    plt.close()
+
+    # Get scatter plot of joke rank vs length of joke
+    x = []
+    y = []
+    for joke in jokeslist:
+        x.append(len(joke.joke))
+        y.append(joke.rank)
+    fit = polyfit(x, y, 1)
+    fit_fn = poly1d(fit)
+    plt.figure
+    plt.scatter(x,y)
+    plt.plot(x, [fit_fn(x) for x in x], color='red')
+    plt.xlabel('Joke length')
+    plt.ylabel('Rank')
+    plt.savefig('scatterofrankvlength.png')
+    plt.close()
+
+    # Some natural language processing
