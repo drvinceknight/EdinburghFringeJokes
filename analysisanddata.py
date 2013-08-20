@@ -113,3 +113,9 @@ if __name__ == '__main__':
     plt.figure
     plt.scatter(x, y)
     plt.savefig('nbrofjokesvmean.png')
+
+    # Get histogram of length of jokes
+    jokelengths = [len(joke.joke) for joke in jokeslist]
+    plt.figure
+    plt.hist(jokelengths)
+    plt.savefig('histofjokelengths.png')
