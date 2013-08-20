@@ -2,6 +2,9 @@
 """
 File for analysis of joke data from Edinburgh Fringe festival. These jokes and rankings taken from BBC website.
 """
+import re
+import nltk
+import collections
 import matplotlib.pyplot as plt
 from pylab import polyfit, poly1d
 
@@ -78,6 +81,26 @@ class Author():
 def mean(l):
     return sum(l) / len(l)
 
+def plotfreqdict(dict, title, xlabel, numberofwords=50, width=.1):
+    """
+    A function to plot bar plot of distribution of frequency
+
+    Args:
+        dict: A dictionary with numeric values
+        title: A title for the plot (which will also be sued as the title for the png file that is output
+        xlabel: A title for the x label
+        numberofwords: The number of most popular words
+        width: width of the bins
+    """
+    x = [e - width for e in range(1, 2 * numberofwords + 1, 2)]
+    plt.figure()
+    plt.bar(x, dict.values()[:numberofwords], width=width, align="center")
+    plt.xticks(x, dict.keys()[:numberofwords], rotation=90)
+    plt.xlabel("Word")
+    plt.ylabel("Frequency")
+    plt.title(title)
+    plt.savefig(title.replace(" ", "_").replace("\n","") + ".png", bbox_inches='tight')
+
 if __name__ == '__main__':
     jokeslist = []
     authorsdict = {}
@@ -146,9 +169,18 @@ if __name__ == '__main__':
     jokelengths = [len(joke.joke) for joke in jokeslist]
     plt.figure
     plt.hist(jokelengths)
-    plt.xlabel('Joke length')
+    plt.xlabel('Joke length (characters)')
     plt.ylabel('Frequency')
     plt.savefig('histofjokelengths.png')
+    plt.close()
+
+    # Get histogram of length of jokes (words)
+    jokelengths = [len(re.findall(r'\w+', joke.joke)) for joke in jokeslist]
+    plt.figure
+    plt.hist(jokelengths)
+    plt.xlabel('Joke length (words)')
+    plt.ylabel('Frequency')
+    plt.savefig('histofjokewordlengths.png')
     plt.close()
 
     # Get scatter plot of joke rank vs length of joke
@@ -162,9 +194,35 @@ if __name__ == '__main__':
     plt.figure
     plt.scatter(x,y)
     plt.plot(x, [fit_fn(x) for x in x], color='red')
-    plt.xlabel('Joke length')
+    plt.xlabel('Joke length (characters)')
     plt.ylabel('Rank')
     plt.savefig('scatterofrankvlength.png')
     plt.close()
 
+    # Get scatter plot of joke rank vs length of joke (words)
+    x = []
+    y = []
+    for joke in jokeslist:
+        x.append(len(re.findall(r'\w+',joke.joke)))
+        y.append(joke.rank)
+    fit = polyfit(x, y, 1)
+    fit_fn = poly1d(fit)
+    plt.figure
+    plt.scatter(x,y)
+    plt.plot(x, [fit_fn(x) for x in x], color='red')
+    plt.xlabel('Joke length (words)')
+    plt.ylabel('Rank')
+    plt.savefig('scatterofrankvwordlength.png')
+    plt.close()
+
     # Some natural language processing
+    commonwords = [e.upper() for e in set(nltk.corpus.stopwords.words('english'))]
+    fulljokeasstring = ""
+    for joke in jokeslist:
+        fulljokeasstring += " " + joke.joke
+    wordfreq = collections.OrderedDict(nltk.FreqDist([e.upper() for e in fulljokeasstring.replace(".", " ").replace("!", " ").replace(",", " ").replace(")", "").replace("(", "").replace("'", "").replace("`", "").split()]))  # Creates a sorted dictionary which is useful for plotting.
+    plotfreqdict(wordfreq, "Distribution of words", "Words", numberofwords=20, width=.1)
+    for key in wordfreq:
+        if key.upper() in commonwords:
+            del wordfreq[key]
+    plotfreqdict(wordfreq, "Distribution of words\n (Common words removed)", "Words", numberofwords=20, width=.1)
