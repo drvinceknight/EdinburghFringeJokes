@@ -10,7 +10,7 @@ You can see all the top 10s over the past year here:
 - [2010](http://www.bbc.co.uk/news/uk-scotland-11053202)
 - [2009](http://news.bbc.co.uk/1/hi/scotland/edinburgh_and_east/8216991.stm)
 
-I've spent an hour or so this evening grabbing all the jokes and doing some very basic analysis of them in Python. The full github repo with all the code (and the data set) can be found [here]().
+I've spent an hour or so this evening grabbing all the jokes and doing some very basic analysis of them in Python. The full github repo with all the code (and the data set) can be found [here](https://github.com/drvinceknight/EdinburghFringeJokes).
 
 # Shorter jokes are better
 
@@ -48,4 +48,4 @@ A part from the word 'FAT' which appears in 3 jokes I can't say I recognise any 
 
 I can't say that I've found anything too amazing here but if anything the python file in the github repo contains the data from the past 5 years so if I (or anyone else) had time I'd take a closer look at some things...
 
-On a technical note, pretty much everything above was done in pure [`matplotlib`](http://matplotlib.org/) and the [`nltk`](http://nltk.org/) library is very easy to use. This is all in the github repo...
+On a technical note, pretty much everything above was done in pure [`matplotlib`](http://matplotlib.org/) and the [`nltk`](http://nltk.org/) library is very easy to use. This is all in the github [repo](https://github.com/drvinceknight/EdinburghFringeJokes)...
